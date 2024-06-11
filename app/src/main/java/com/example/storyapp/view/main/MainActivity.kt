@@ -8,10 +8,15 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.storyapp.R
+import com.example.storyapp.adapter.LoadingStateAdapter
 import com.example.storyapp.adapter.StoryAdapter
+import com.example.storyapp.data.response.ListStoryItem
 import com.example.storyapp.databinding.ActivityMainBinding
+import com.example.storyapp.paging.PagingViewModel
+import com.example.storyapp.paging.PagingViewModelFactory
 import com.example.storyapp.view.ViewModelFactory
 import com.example.storyapp.view.add.AddStoryActivity
+import com.example.storyapp.view.maps.MapsActivity
 import com.example.storyapp.view.welcome.WelcomeActivity
 
 class MainActivity : AppCompatActivity() {
@@ -19,6 +24,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var factory: ViewModelFactory
     private val viewModel: MainViewModel by viewModels { factory }
     private var token = ""
+    private lateinit var story: ArrayList<ListStoryItem>
+    val pagingViewModel: PagingViewModel by viewModels { PagingViewModelFactory(this) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,14 +38,24 @@ class MainActivity : AppCompatActivity() {
         appBar()
         addStory()
         isLogin()
+
+        viewModel.listStory.observe(this) {
+            story = it.listStory as ArrayList<ListStoryItem>
+        }
     }
 
     private fun appBar() {
         binding.topAppBar.setOnMenuItemClickListener { menuItem ->
             when (menuItem.itemId) {
+                R.id.maps -> {
+                    val intent = Intent(this, MapsActivity::class.java)
+                    intent.putParcelableArrayListExtra("location", story)
+                    startActivity(intent)
+                    true
+                }
                 R.id.logout -> {
                     viewModel.userLogout()
-                    onDestroy()
+                    finish()
                     true
                 }
                 else -> false
@@ -62,10 +79,14 @@ class MainActivity : AppCompatActivity() {
 
         binding.rvStory.setHasFixedSize(true)
 
-        viewModel.listStory.observe(this) { adapter ->
-            if (adapter != null) {
-                binding.rvStory.adapter = StoryAdapter(adapter.listStory)
+        val adapter = StoryAdapter()
+        binding.rvStory.adapter = adapter.withLoadStateFooter(
+            footer = LoadingStateAdapter {
+                adapter.retry()
             }
+        )
+        pagingViewModel.pagingStory.observe(this) {
+            adapter.submitData(lifecycle, it)
         }
     }
 

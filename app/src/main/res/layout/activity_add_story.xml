@@ -66,6 +66,27 @@
                 android:hint="@string/story_desc"/>
         </com.google.android.material.textfield.TextInputLayout>
 
+        <TextView
+            android:id="@+id/tv_location"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="10dp"
+            android:text="@string/location"
+            app:layout_constraintTop_toBottomOf="@+id/edt_layout_desc"
+            app:layout_constraintStart_toStartOf="parent"
+            tools:ignore="UnknownId"
+            tools:layout_editor_absoluteX="5dp" />
+
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/btn_location"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="32dp"
+            app:layout_constraintBottom_toBottomOf="@+id/tv_location"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/tv_location" />
+
         <Button
             android:id="@+id/btn_upload"
             android:layout_width="match_parent"
@@ -75,7 +96,7 @@
             android:layout_marginHorizontal="20dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/edt_layout_desc"/>
+            app:layout_constraintTop_toBottomOf="@+id/btn_location"/>
 
         <ProgressBar
             android:id="@+id/progressBar"

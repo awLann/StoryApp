@@ -65,7 +65,7 @@ class Repository private constructor(private val preferences: UserPreferences) {
     val listStory: LiveData<StoryResponse> = _listStory
 
     fun getStory(token: String) {
-        val client = ApiConfig.getApiService().getStories(token)
+        val client = ApiConfig.getApiService().getStories(token, size = 15, location = 1)
         client.enqueue(object : Callback<StoryResponse> {
             override fun onResponse(call: Call<StoryResponse>, response: Response<StoryResponse>) {
                 if (response.isSuccessful) {
@@ -85,8 +85,8 @@ class Repository private constructor(private val preferences: UserPreferences) {
     private val _add = MutableLiveData<AddStoryResponse>()
     val add: LiveData<AddStoryResponse> = _add
 
-    fun addStory(token: String, file: MultipartBody.Part, description: RequestBody) {
-        val client = ApiConfig.getApiService().addStories(token, file, description)
+    fun addStory(token: String, file: MultipartBody.Part, description: RequestBody, lat: RequestBody? = null, lon: RequestBody? = null) {
+        val client = ApiConfig.getApiService().addStories(token, file, description, lat, lon)
         client.enqueue(object : Callback<AddStoryResponse> {
             override fun onResponse(call: Call<AddStoryResponse>, response: Response<AddStoryResponse>) {
                 if (response.isSuccessful) {

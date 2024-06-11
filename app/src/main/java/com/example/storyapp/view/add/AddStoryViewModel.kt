@@ -13,9 +13,9 @@ import okhttp3.RequestBody
 class AddStoryViewModel(private val repository: Repository): ViewModel() {
     val add: LiveData<AddStoryResponse> = repository.add
 
-    fun addStory(token: String, file: MultipartBody.Part, description: RequestBody) {
+    fun addStory(token: String, file: MultipartBody.Part, description: RequestBody, lat: RequestBody?, lon: RequestBody?) {
         viewModelScope.launch {
-            repository.addStory(token, file, description)
+            repository.addStory(token, file, description, lat, lon)
         }
     }
 
